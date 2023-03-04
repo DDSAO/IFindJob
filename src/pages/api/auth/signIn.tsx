@@ -13,9 +13,7 @@ export default async function handler(
 
   let { username, password } = req.body;
   await client.connect();
-  console.log({ username, password });
   let user = await UserCollection.findOne({ username });
-  console.log(user);
   if (!user) return res.status(200).json({ ok: 0, error: "user not exists" });
   if (user && user.password === password) {
     setCookie("token", `${username}:${password}`, { req, res });
