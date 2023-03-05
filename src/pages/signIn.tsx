@@ -78,6 +78,7 @@ export default function Page() {
             {/* <Image width={100} height={30} src="/images/logo.png" alt="" /> */}
           </div>
           <div className="w-96 my-4">
+            <p className="text-3xl text-center">IFindJob</p>
             <p className="w-full text-center text-xl my-4">
               Username/Password Login
             </p>

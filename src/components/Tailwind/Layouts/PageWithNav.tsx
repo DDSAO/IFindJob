@@ -6,7 +6,11 @@ import { BiLogOut, BiUserCircle } from "react-icons/bi";
 import { IoBagHandleSharp } from "react-icons/io5";
 import { MdKeyboardArrowLeft } from "react-icons/md";
 import { useRouter } from "next/router";
-import { AiOutlineHome } from "react-icons/ai";
+import { AiOutlineHome, AiOutlineUnorderedList } from "react-icons/ai";
+import { RiThumbUpLine } from "react-icons/ri";
+import { atom, useRecoilState, useRecoilValue } from "recoil";
+import { FiThumbsUp } from "react-icons/fi";
+import { TiDocumentAdd } from "react-icons/ti";
 
 const TextBar = (props: { text: string; expand: boolean | null }) => {
   const { text, expand } = props;
@@ -236,19 +240,23 @@ const NavBar = (props: { user: User }) => {
           <TextBar text="MENU" expand={expand} />
           <IconBar
             onClick={() => {
-              setExpand(false);
+              router.push("/job/create");
             }}
-            icon={<IoBagHandleSharp size="24px" />}
-            text={"My Job"}
+            icon={<TiDocumentAdd size="24px" />}
+            text={"Add Job"}
             expand={expand}
-            setExpand={() => setExpand(true)}
+            setExpand={() => {
+              setExpand(true);
+            }}
           />
           <IconBar
             onClick={() => {
+              router.push("/job/list");
+
               setExpand(false);
             }}
-            icon={<IoBagHandleSharp size="24px" />}
-            text={"My Job"}
+            icon={<AiOutlineUnorderedList size="24px" />}
+            text={"My Jobs"}
             expand={expand}
             setExpand={() => setExpand(true)}
           />
@@ -282,20 +290,52 @@ const NavBar = (props: { user: User }) => {
 };
 const Content = (props: { content?: any }) => {
   return (
-    <div className="absolute h-full w-[calc(100%-128px)] left-32  top-0">
+    <div className="absolute h-full w-[calc(100%-128px)] left-32 top-0 overflow-auto">
       {props.content ?? null}
     </div>
   );
 };
 
+const ThumbUp = () => {
+  return (
+    <div className="">
+      <div className="absolute top-[calc(50%-192px)] left-[calc(50%-192px)] animate-ping w-96 h-96 ">
+        <FiThumbsUp className="w-96 h-96 text-green-200" />
+      </div>
+      <div className="absolute w-96 h-96 top-[calc(50%-192px)] left-[calc(50%-192px)]">
+        <FiThumbsUp className="absolute w-96 h-96 text-green-400" />
+      </div>
+    </div>
+  );
+};
+
+export const PlayThumbUpAtom = atom({
+  key: "/PlayThumbUpAtom",
+  default: false,
+});
+
 export const PageWithNav = (props: { children?: any; user: User }) => {
   let { user, children } = props;
+  const [thumbUp, setThumbUp] = useRecoilState(PlayThumbUpAtom);
+
+  useEffect(() => {
+    let timeout: any = null;
+    if (thumbUp) {
+      timeout = setTimeout(() => {
+        setThumbUp(false);
+      }, 1500);
+    }
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [thumbUp]);
 
   //https://dribbble.com/shots/17143561-Sidebar-Navigation-Menu-Animation
   return (
     <div className="relative w-screen h-screen bg-blue-100">
       <NavBar user={user} />
       <Content content={children} />
+      {thumbUp && <ThumbUp />}
     </div>
   );
 };

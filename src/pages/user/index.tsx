@@ -11,6 +11,9 @@ import { TextField } from "@/components/Tailwind/Input/TextField";
 import { TextArea } from "@/components/Tailwind/Input/TextArea";
 import { SlideButton } from "@/components/Tailwind/Button/SlideButton";
 import { BiSave } from "react-icons/bi";
+import { FixedField } from "@/components/Tailwind/Input/FixedField";
+import usePost from "@/lib/hooks/usePost";
+import { useThumbUp } from "./../../lib/hooks/useThumbUp";
 
 interface PageProps {
   user: User;
@@ -42,6 +45,17 @@ export default function Page({
   user,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const [theUser, setUser] = useState(user);
+  const play = useThumbUp();
+
+  const saveMutation = usePost<{ user: User }, { user: User }>({
+    url: "/user/saveUser",
+    onComplete: (data) => {
+      if (data && data.user) {
+        setUser(data.user);
+        play();
+      }
+    },
+  });
 
   return (
     <PageWithNav user={user}>
@@ -51,9 +65,14 @@ export default function Page({
           <div className="lg:col-span-4"></div>
           <div className="flex items-center justify-end">
             <SlideButton
+              loading={saveMutation.loading}
               color="yellow"
               text="Save"
-              onClickF={() => {}}
+              onClickF={() => {
+                saveMutation.reload({
+                  user: theUser,
+                });
+              }}
               startIcon={<BiSave size="16px" />}
             />
           </div>
@@ -61,6 +80,7 @@ export default function Page({
           <p className="lg:col-span-6 text-lg text-slate-100 px-2 bg-blue-400 rounded-md shadow-md w-fit">
             Basic Info
           </p>
+          <FixedField title={"ID"} value={theUser.id} />
           <TextField
             title="Name"
             value={theUser.name}
@@ -71,16 +91,31 @@ export default function Page({
               });
             }}
           />
-          <TextField
-            title="Highest Degree"
-            value={theUser.degree}
-            onChangeF={(e) => {
-              setUser({
-                ...theUser,
-                degree: e.target.value,
-              });
-            }}
-          />
+          <div className="lg:col-span-2">
+            <TextField
+              title="Highest Degree"
+              value={theUser.degree}
+              onChangeF={(e) => {
+                setUser({
+                  ...theUser,
+                  degree: e.target.value,
+                });
+              }}
+            />
+          </div>
+          <div className="lg:col-span-6">
+            <TextArea
+              rows={3}
+              title="Introduction"
+              value={theUser.introduction}
+              onChangeF={(e) => {
+                setUser({
+                  ...theUser,
+                  introduction: e.target.value,
+                });
+              }}
+            />
+          </div>
           <div className="lg:col-span-6">
             <TextArea
               rows={10}

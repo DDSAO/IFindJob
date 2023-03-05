@@ -1,3 +1,4 @@
+import { Job } from "@/interfaces/jobDefinition";
 import { User } from "@/interfaces/userDefinitions";
 import { MongoClient } from "mongodb";
 
@@ -10,6 +11,10 @@ export const UserCollection = client
 export const IndexCollection = client
   .db("IFindJob")
   .collection("IndexCollection");
+
+export const JobCollection = client
+  .db("IFindJob")
+  .collection<Job>("JobCollection");
 
 export const verifyToken = async (
   token?: string | null

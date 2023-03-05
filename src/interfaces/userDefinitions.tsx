@@ -6,6 +6,8 @@ export type User = {
 
   name: string;
   degree: string;
+  introduction: string;
   workExperience: string;
   awards: string;
+  techStacks: string;
 };

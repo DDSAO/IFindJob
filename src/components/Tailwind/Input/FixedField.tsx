@@ -13,7 +13,7 @@ export const FixedField = (props: {
         align === "left" || !align ? "items-start" : ""
       } ${align === "right" ? "items-end" : ""} ${
         align === "center" ? "items-center" : ""
-      } justify-start ${error ? "ring-2 ring-offset-4 ring-red-400" : ""} `}
+      } justify-end ${error ? "ring-2 ring-offset-4 ring-red-400" : ""} `}
     >
       <p className="text-xs font-bold text-left">
         {title} <span className="invisible">1</span>
@@ -24,7 +24,7 @@ export const FixedField = (props: {
         </p>
       )}
       {value !== undefined && (
-        <p className={`text-md  text-left `}>
+        <p className={`text-md text-left h-8 leading-8`}>
           {value} <span className="invisible">1</span>
         </p>
       )}
